@@ -88,7 +88,7 @@ ggplot(df, aes(x,y)) +
 
 # Regression
 
-Now we run the regression: `$y = \beta_0 + \beta_1 x + \epsilon$`.
+Now we run the regression: $y = \beta_0 + \beta_1 x + \epsilon$.
 
 ```{r}
 my_reg = lm(y~x, data = df)
