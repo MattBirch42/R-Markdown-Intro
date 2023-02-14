@@ -1,0 +1,120 @@
+---
+title: "Welcome to R Markdown"
+author: "Matt Birch"
+date: '2023-02-14'
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### This document gives an introduction to R Markdown. Start by opening a new Markdown file (.Rmd). I will demonstrate:
+
+* Writing headings and paragraph text
+* How to make code-like, italicized, bold, and underlined text
+* Writing mathematical equations in paragraph text
+* Running code chunks
+* How to display a graph
+* Run a regression and add an automated interpretation of the output
+
+
+For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+
+# Normal text vs Headings
+
+Typing paragraphs like this one is easy. Just type it. R will automatically recognize it as paragraph text. If you want to emphasize a line as a heading, simply put `# ` symbols and a space in front of it. `# ` makes the largest headings, `##` makes smaller headings, and so on.
+
+# Text with `# ` preceeding it
+## Text with `## ` preceeding it
+### Text with `### ` preceeding it
+#### Text with `#### ` preceeding it
+
+
+# How to make code-like, italicized, bold, and underlined text
+
+You have already seen text in this document that `looks like it is copied from R code`. To do this, simply wrap it in backticks, or grave accents. 
+
+You can *italicize* text by wrapping it in single asterisks or underscores. For example, typing `*exciting words*` will display *exciting words* in the knitted file. 
+
+You can **bold** your text by wrapping it in double asterisks or underscores. For example, typing `**important words**` will display **important words** in the knitted file. 
+
+You can <u>underline</u> your text by using HTML tags (`<u>` and `</u>`) as follows: typing `<u>more words</u>` will display <u>more words</u> in the knitted file. Watch the placement of the / symbol, as it tells the program to end the underlining. 
+
+
+# How to write mathematical equations
+
+Mathmatical equations need to be wrapped in `$` signs, and be formatted with LaTeX conventions. For more info on LaTeX, click here: <https://www.reed.edu/academic_support/pdfs/qskills/latexcheatsheet.pdf>
+
+To demonstrate this part, I am going to start with a regression example that I will use throughout the rest of the document. Say I am interested in a simple OLS model. The regression equation for it is $y = \beta_0 + \beta_1 x + \epsilon$, which is the result of inserting this code: `$y = \beta_0 + \beta_1 x + \epsilon$`. 
+
+For our exercise, we will create fake data that centers on $\beta_0 = 10$ and $\beta_1 = 2$ and $\epsilon$ follows a standard normal distribution. We will eventually look at the estimated coefficients and predicted values: $\hat y = \hat \beta_0 + \hat \beta_1 x$.
+
+
+# Running code chunks
+
+Everything we have done so far has just been about formatting our letters. We have not yet run any code. To run code in R Markdown, it must be contained in chunks. A chunk starts and ends with three backticks. You also have to specify what coding language will be in the chunk, as it can accept R, Python, and SQL. To specify R code, after the opening 3 backticks, enter `{r}`. The chunk will start with ````{r}` and end with 3 more backticks. You can shortcut this by pressing CTRL + ALT + I and it will produce the beginning and the end of the chunk. 
+
+Here is our first chunk, based on the regression setup. We will draw 100 samples from a uniform distribution and put them in a vector `x` and use them to generate `y`.
+
+```{r}
+set.seed(42)
+
+beta0 = 10
+beta1 = 2
+epsilon = rnorm(100,0,1)
+x = runif(100,0,10)
+y = beta0 + x*beta1+ epsilon
+
+df = data.frame(x,y)
+```
+
+We can also practice running a code chunk so that less output shows.  In the `{r}` portion, try adding the following options: `{r, echo = FALSE}` or `{r, include = FALSE}`. 
+
+
+# Displaying a graph
+
+For this section, I will use the `ggplot2` library to make a scatter plot of x and y. Displaying a graph is relatively easy. Simply create the graph in a code chunk and it will show up.
+
+This graph is a scatter plot of the fake data we created in the earlier section. 
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x,y)) +
+  geom_point(color = "gray80") +
+  theme_light() +
+  labs(title = "Fancy Scatter Plot",
+     x = "X Variable",
+     y = "Y Variable")
+```
+
+# Regression
+
+Now we run the regression: `$y = \beta_0 + \beta_1 x + \epsilon$`.
+
+```{r}
+my_reg = lm(y~x, data = df)
+
+summary(my_reg)
+```
+Now we could type a specific interpretation of the regression, where we type the numbers in the output. But that would be **lame**. This is R Markdown! We can extract the output from that regression and include it directly in the text!
+
+To do this, we will add a new way of displaying text. Earlier, we surrounded text in backticks to create `code-like text` in the paragraph. Now if we add `r` immediately following the first backtick, we can run code in line. For instance we know that the coefficients from the regression are `my_reg$coefficients[1]` and `my_reg$coefficients[2]`. If we add the `r` before them, we get `r my_reg$coefficients[1]` and `r my_reg$coefficients[2]`. Or we can round them and get `r round(my_reg$coefficients[1],3)` and `r round(my_reg$coefficients[2],3)`.
+
+How is this helpful? Well I can automate my explanation of the result. Rather than hardcoding my numbers, and then fixing them every time I change the model or the data, I can use the code in-line. For instance, I can tell you that the average value of `y` when `x=0` is `r round(my_reg$coefficients[1],3)`, (don't forget that the true value is `r beta0`). I can further say that for every single unit increase in `x`, the model predicts that `y` changes by `r round(my_reg$coefficients[2],3)`, where the true value was `r beta1`.  You might be surprised if reading the finished document, but I did not type a single number in that paragraph. It was all in-line code!
+
+And just for fun, here is an updated plot:
+
+```{r, echo = FALSE}
+library(ggplot2)
+
+ggplot(df, aes(x,y)) +
+  geom_point(color = "gray80") +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  theme_light() +
+  labs(title = "Fancy Regression Plot",
+       x = "X Variable",
+       y = "Y Variable")
+```
