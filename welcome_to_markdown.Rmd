@@ -4,9 +4,6 @@ author: "Matt Birch"
 date: '2023-02-14'
 output: html_document
 ---
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ### This document gives an introduction to R Markdown. Start by opening a new Markdown file (.Rmd). The full code is available in GitHub here: <https://github.com/MattBirch42/R-Markdown-Intro.git>. I will use this document to demonstrate:
 
