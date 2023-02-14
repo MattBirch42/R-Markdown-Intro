@@ -8,8 +8,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-### This document gives an introduction to R Markdown. Start by opening a new Markdown file (.Rmd). I will demonstrate:
+### This document gives an introduction to R Markdown. Start by opening a new Markdown file (.Rmd). The full code is available in GitHub here: <https://github.com/MattBirch42/R-Markdown-Intro.git>. I will use this document to demonstrate:
 
 * Writing headings and paragraph text
 * How to make code-like, italicized, bold, and underlined text
